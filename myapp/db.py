@@ -1,10 +1,14 @@
 import uuid
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy import create_engine, sessionmaker
 from sqlalchemy import Column, String, Text, Datetime, Foreignkey 
 from sqlalchemy.orm import DeclarativeBase, relationship
+from dotenv import load_dotenv
+import os
 
-DATABASE_URL = ""
+load_dotenv()
 
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+psycopg2://postgres:$Hadyla5@localhost:5432/your_database_name")
 
 engine = create_engine(DATABASE_URL)
 my_sessions = sessionmaker(bind=engine)
