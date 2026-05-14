@@ -37,4 +37,6 @@ celerybeat-schedule
 *.sqlite3
 *.pid
 *.seed
-*.cover    
+*.cover
+node_modules/
+dist/

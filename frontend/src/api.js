@@ -20,7 +20,9 @@ export const api = {
   checkHealth: async () => {
     try {
       const res = await fetch(`${API_BASE}/health`);
-      return res.ok;
+      if (!res.ok) return false;
+      const data = await res.json();
+      return data.status === 'connected';
     } catch {
       return false;
     }
