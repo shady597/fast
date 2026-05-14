@@ -7,7 +7,7 @@ import os
 
 load_dotenv()
 
-DATABASE_URL = "postgresql+psycopg2://postgres:$Hadyla5@localhost:5432/postgres"
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+psycopg2://postgres:password@localhost:5432/postgres")
 
 engine = create_engine(DATABASE_URL)
 my_sessions = sessionmaker(bind=engine)

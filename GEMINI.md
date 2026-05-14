@@ -23,6 +23,13 @@ This is a FastAPI-based web application named `myproject`. It uses SQLAlchemy (v
 - Python >= 3.14
 - PostgreSQL server
 
+### Configuration
+Create a `.env` file in the root directory (one has been initialized for you) and configure the following variables:
+- `DATABASE_URL`: Connection string for PostgreSQL (e.g., `postgresql+psycopg2://user:password@localhost:5432/dbname`).
+- `APP_HOST`: The host for the FastAPI server (default: `127.0.0.1`).
+- `APP_PORT`: The port for the FastAPI server (default: `8000`).
+- `APP_RELOAD`: Enable/disable auto-reload (default: `True`).
+
 ### Installation
 The project uses `uv` for dependency management.
 ```bash
