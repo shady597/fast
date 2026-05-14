@@ -1,24 +1,35 @@
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from myapp import db
 from myapp.schemas import Postcreation
-from myapp.db import engine, my_sessions
+from myapp.db import engine, my_sessions, MyPost
 from sqlalchemy.orm import Session
+from typing import List
 
 app = FastAPI()
+
+# Configure CORS
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 db.Base.metadata.create_all(bind=engine)
 
 def get_db():
-    db = my_sessions()
+    database = my_sessions()
     try:
-        yield db
+        yield database
     finally:
-        db.close()
-
-my_posts = {1: {"title": "First Post", "content": "This is the first post."},
-            3: {"title": "Second Post", "content": "This is the second post."},
-            
-            }
+        database.close()
 
 @app.get("/")
 def getdata():
@@ -28,30 +39,31 @@ def getdata():
 def home():
     return {"message": "Hello World!"}
 
-
 @app.get("/posts")   
-def all_posts(limit: int = None):
-    db = my_sessions()
-
-    return my_posts
+def all_posts(db: Session = Depends(get_db), limit: int = 10):
+    posts = db.query(MyPost).limit(limit).all()
+    return posts
 
 @app.get("/posts/{id}")
-def get_post(id: int):
-   if id not in my_posts:
+def get_post(id: str, db: Session = Depends(get_db)):
+   post = db.query(MyPost).filter(MyPost.id == id).first()
+   if not post:
          raise HTTPException(status_code=404, detail="Post not found")
-   return my_posts.get(id)
+   return post
 
-@app.post("/posts")
-def createpost(post: Postcreation): 
-    mynew_post = {"Title": post.title, "content": post.content}
+@app.post("/posts", status_code=201)
+def createpost(post: Postcreation, db: Session = Depends(get_db)): 
+    mynew_post = MyPost(title=post.title, content=post.content)
+    db.add(mynew_post)
+    db.commit()
+    db.refresh(mynew_post)
     return mynew_post
-
-
 
 @app.get("/health")
 def health_check(db: Session = Depends(get_db)):
     try:
-        db.execute("SELECT 1")
+        db.execute(db.text("SELECT 1"))
         return {"status": "connected"}
     except Exception as e:
         return {"status": "disconnected", "error": str(e)} 
+ 

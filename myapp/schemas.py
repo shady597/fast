@@ -1,13 +1,16 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class Postcreation(BaseModel):
-    id: int 
     title: str
     content: str
-    created_at: int
+
+class PostResponse(Postcreation):
+    id: str
+    
+    class Config:
+        from_attributes = True
 
 class Usercreation(BaseModel):
-    id: int 
     username: str
     email: str
-    

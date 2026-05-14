@@ -21,6 +21,7 @@ This is a FastAPI-based web application named `myproject`. It uses SQLAlchemy (v
 
 ### Prerequisites
 - Python >= 3.14
+- Node.js >= 18
 - PostgreSQL server
 
 ### Configuration
@@ -31,20 +32,37 @@ Create a `.env` file in the root directory (one has been initialized for you) an
 - `APP_RELOAD`: Enable/disable auto-reload (default: `True`).
 
 ### Installation
+
+#### Backend
 The project uses `uv` for dependency management.
 ```bash
 uv sync
 ```
 
+#### Frontend
+```bash
+cd frontend
+npm install
+```
+
 ### Running the Application
-To start the server with auto-reload enabled:
+
+To run the full-stack application, you need to start both the backend and frontend servers.
+
+#### 1. Start Backend
+From the root directory:
 ```bash
 python main.py
 ```
-Alternatively, use uvicorn directly:
+The API will be available at `http://127.0.0.1:8000`.
+
+#### 2. Start Frontend
+From the `frontend/` directory:
 ```bash
-uvicorn myapp.fast:app --reload
+npm run dev
 ```
+The frontend will be available at `http://localhost:5173`.
+
 
 ### API Documentation
 Once the server is running, you can access the interactive API docs at:
@@ -63,7 +81,10 @@ Once the server is running, you can access the interactive API docs at:
 - Ensure `.env` is populated with a valid `DATABASE_URL`.
 
 ### TODOs / Improvements
-- [ ] Fix SQLAlchemy 2.0 base class declaration in `myapp/db.py` (currently `Base = DeclarativeBase()` should be `class Base(DeclarativeBase): pass`).
-- [ ] Correct case for SQLAlchemy types in `myapp/db.py` (e.g., `DateTime`, `ForeignKey`).
-- [ ] Implement full CRUD logic using the database models instead of the in-memory `my_posts` dictionary.
-- [ ] Add unit and integration tests.
+- [x] Fix SQLAlchemy 2.0 base class declaration in `myapp/db.py`.
+- [x] Correct case for SQLAlchemy types in `myapp/db.py` (e.g., `DateTime`, `ForeignKey`).
+- [x] Implement full CRUD logic using the database models instead of the in-memory `my_posts` dictionary.
+- [ ] Initialize **Alembic** for database migrations.
+- [ ] Add unit and integration tests using `pytest` and `httpx`.
+- [ ] Implement `User` registration and management routes.
+- [ ] Add `response_model` to all FastAPI routes for better data filtering.
